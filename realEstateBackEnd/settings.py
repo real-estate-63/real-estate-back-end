@@ -25,7 +25,7 @@ SECRET_KEY = 'f4d3or+0yl7_kuil(oc*=v1+)^&p1tpq01sq!s8t%w=&#h7e-n'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
 
 
 # Application definition
@@ -75,8 +75,15 @@ WSGI_APPLICATION = 'realEstateBackEnd.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'db_real-estate',
+        'USER': 'root',
+        'PASSWORD': 'root',
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'OPTIONS': {
+            'unix_socket': '/Applications/MAMP/tmp/mysql/mysql.sock',
+        }
     }
 }
 
