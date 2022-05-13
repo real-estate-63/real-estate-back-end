@@ -35,11 +35,11 @@ class Address(models.Model):
     full_address = models.CharField(max_length=256)
 
     def save(self, *args, **kwargs):
-        self.full_location = self.number + ' ' + self.name_street + ',' + self.ward_id.name + ',' + self.district_id.name
+        self.full_address = self.number + ' ' + self.name_street + ',' + self.ward_id.name + ',' + self.district_id.name
         super(Address, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.full_location
+        return self.full_address
 
     class Meta:
         db_table = 'address'
