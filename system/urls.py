@@ -5,10 +5,10 @@ from system.views import CountryManagement, ProvinceCityManagement, DistrictMana
     WardManagement
 
 router = SimpleRouter()
-router.register('country_management', CountryManagement, basename="country_management")
-router.register('province_city_management', ProvinceCityManagement, basename="province_city_management")
-router.register('district_management', DistrictManagement, basename="district_management")
-router.register('ward_management', WardManagement, basename="ward_management")
+router.register(r'^country_management/', CountryManagement, basename="country_management")
+router.register(r'^province_city_management/', ProvinceCityManagement, basename="province_city_management")
+router.register(r'^district_management/', DistrictManagement, basename="district_management")
+router.register(r'^ward_management/', WardManagement, basename="ward_management")
 
 
 urlpatterns = [
