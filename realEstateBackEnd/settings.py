@@ -39,10 +39,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    # 'django_extensions',
     'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',
+    'allauth',
+    'allauth.account',
+    'rest_auth.registration',
+    'rest_framework_jwt',
     'django_filters',
-    'system',
-    'user',
+    'systems',
+    'users',
 
 ]
 
@@ -61,8 +69,7 @@ ROOT_URLCONF = 'realEstateBackEnd.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        # os.path.join(BASE_DIR, 'templates')
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -85,12 +92,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'RealEstate',
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': '123456@abc',
         'HOST': 'localhost',
-        'PORT': '3306',
-        'OPTIONS': {
-            'unix_socket': '/Applications/MAMP/tmp/mysql/mysql.sock',
-        }
+        'PORT': '3306'
     }
 }
 
@@ -131,8 +135,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # AbstractUser
-AUTH_USER_MODEL = 'user.User'
-
+AUTH_USER_MODEL = 'users.User'
 
 REST_FRAMEWORK = {
 
@@ -140,7 +143,7 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
         "rest_framework.permissions.IsAdminUser",
     ),
-    "DEFAULT_PARSER_CLASSES": ("rest_framework.parsers.JSONParser", ),
+    "DEFAULT_PARSER_CLASSES": ("rest_framework.parsers.JSONParser",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         # "rest_framework_simplejwt.authentication.JWTTokenUserAuthentication",
         "rest_framework.authentication.SessionAuthentication",
@@ -179,4 +182,32 @@ SIMPLE_JWT = {
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
+    "allauth.account.auth_backends.AuthenticationBackend",
 ]
+
+# Allauth
+SITE_ID = 4
+REST_USE_JWT = True
+ACCOUNT_ADAPTER = 'users.adapter.CustomAccountAdapter'
+
+# Mail
+ACCOUNT_EMAIL_VERIFICATION = "optional"
+# ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+SELF_ACCOUNT_AUTHENTICATION_METHOD = 'username'
+
+# SMTP
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = '587'
+EMAIL_HOST_USER = 'vietduong906@gmail.com'
+EMAIL_HOST_PASSWORD = '01866582855a@'
+EMAIL_SUBJECT_PREFIX = ''
+
+
+# Autofield Model
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+

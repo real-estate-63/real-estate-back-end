@@ -36,6 +36,7 @@ class District(models.Model):
     type = models.CharField(max_length=64)
     name_with_type = models.CharField(max_length=64)
     code = models.CharField(max_length=64)
+    parent_code = models.CharField(max_length=64)
 
     def __str__(self):
         return self.name
@@ -50,6 +51,7 @@ class Ward(models.Model):
     type = models.CharField(max_length=64)
     name_with_type = models.CharField(max_length=64)
     code = models.CharField(max_length=64)
+    parent_code = models.CharField(max_length=64)
 
     def __str__(self):
         return self.name

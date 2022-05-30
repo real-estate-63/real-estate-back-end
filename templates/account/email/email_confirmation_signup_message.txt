@@ -1,0 +1,10 @@
+Vui lòng ấn vào đường link bên dưới để hoàn tất đăng ký:
+
+{{ activate_url }}
+
+************************************************************
+Bất động sản Tiền Giang
+Email : batdongsantiengiang@gmail.com
+Website : https://batdongsantiengiang.com/
+************************************************************
+

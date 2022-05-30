@@ -2,8 +2,8 @@ from rest_framework import status, viewsets
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
-from system.models import Country, ProvinceCity, District, Ward
-from system.serializers import CountrySerializer, ProvinceSerializer, DistrictSerializer, WardSerializer
+from systems.models import Country, ProvinceCity, District, Ward
+from systems.serializers import CountrySerializer, ProvinceSerializer, DistrictSerializer, WardSerializer
 
 
 class CountryManagement(viewsets.ModelViewSet):

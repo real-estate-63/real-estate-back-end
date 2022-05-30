@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from system.models import Country, ProvinceCity, District, Ward
+from systems.models import Country, ProvinceCity, District, Ward
 
 
 class CountrySerializer(serializers.ModelSerializer):
