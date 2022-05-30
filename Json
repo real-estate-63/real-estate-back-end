@@ -1,17 +1,23 @@
+# API Register User
 {
-    "username": "Viet7",
-    "email": "0306171096+7@caothang.edu.vn",
+    "username": "VietRealEstate",
+    "email": "0306171096@caothang.edu.vn",
+    "user_type": "1",
     "password1": "123456@abc",
     "password2": "123456@abc",
-    "first_name":"Duong",
-    "middle_name":"Quoc",
-    "last_name":"Viet",
+    "first_name":"Dương",
+    "middle_name":"Quốc",
+    "last_name":"Việt",
     "phone_number":"0902324818",
     "birth_date":"1999/03/29",
-    "country_id":"84",
-    "province_city_id":"82",
-    "district_id":"824",
-    "ward_id":"28705",
+    "country":"84",
+    "province_city":"82",
+    "district":"824",
+    "ward":"28705",
     "name_street":"ấp Bà Lẫy 1",
     "number":"014"
 }
+# Create site
+from django.contrib.sites.models import Site
+site = Site.objects.create(domain='batdongsantiengiang.com', name='Bất động sản Tiền Giang')
+site.save()

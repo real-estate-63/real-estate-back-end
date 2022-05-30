@@ -38,9 +38,11 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser):
+    first_name = None
+    last_name = None
     email = models.EmailField(unique=True)
     username = models.CharField(null=True, unique=True, max_length=255)
-    USER_TYPE_CHOICES = ((1, 'sell'), (2, 'buy'))
+    USER_TYPE_CHOICES = ((1, 'Sell'), (2, 'Buy'))
     user_type = models.IntegerField(choices=USER_TYPE_CHOICES, null=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -57,17 +59,17 @@ class User(AbstractUser):
 
 
 class Address(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    country_id = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True)
-    province_city_id = models.ForeignKey(ProvinceCity, on_delete=models.SET_NULL, null=True)
-    district_id = models.ForeignKey(District, on_delete=models.SET_NULL, null=True)
-    ward_id = models.ForeignKey(Ward, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    country = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True)
+    province_city = models.ForeignKey(ProvinceCity, on_delete=models.SET_NULL, null=True)
+    district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True)
+    ward = models.ForeignKey(Ward, on_delete=models.SET_NULL, null=True)
     name_street = models.CharField(max_length=64)
     number = models.CharField(max_length=5)
     full_address = models.CharField(max_length=256)
 
     def save(self, *args, **kwargs):
-        self.full_address = '%s, %s, %s, %s' % (self.number, self.name_street, self.ward_id.name, self.district_id.name)
+        self.full_address = '%s, %s, %s, %s' % (self.number, self.name_street, self.ward.name, self.district.name)
         super(Address, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -78,14 +80,14 @@ class Address(models.Model):
 
 
 class UserProfile(models.Model):
-    user_id = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=30)
     middle_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=150)
     full_name = models.CharField(max_length=150)
     phone_number = models.CharField(max_length=14)
     birth_date = models.DateField()
-    adress_id = models.OneToOneField(Address, on_delete=models.SET_NULL, null=True)
+    adress = models.OneToOneField(Address, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.full_name
@@ -99,10 +101,10 @@ class UserProfile(models.Model):
 
 
 class RealEstateInfor(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=256)
     type = models.CharField(max_length=64)
-    address_id = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True)
+    address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True)
     description = models.TextField()
     create_at = models.DateTimeField(auto_now=True)
     update_at = models.DateTimeField(auto_now=True)
@@ -114,3 +116,4 @@ class RealEstateInfor(models.Model):
 
     class Meta:
         db_table = 'real_estate_infor'
+

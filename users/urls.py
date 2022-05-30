@@ -14,10 +14,10 @@ urlpatterns = [
 
     path('user_register/', UserRegisterView.as_view(), name='user_register'),
 
-    path(r'^login/', LoginView.as_view(), name="account_login"),
-    path(r'^signup/', SignupView.as_view(), name="account_signup"),
-    path(r'^logout/', LogoutView.as_view(), name="account_logout"),
-    path(r'^logout/', EmailView.as_view(), name="account_email"),
+    re_path(r'^login/', LoginView.as_view(), name="account_login"),
+    re_path(r'^signup/', SignupView.as_view(), name="account_signup"),
+    re_path(r'^logout/', LogoutView.as_view(), name="account_logout"),
+    re_path(r'^logout/', EmailView.as_view(), name="account_email"),
 
 
     re_path(r'^verify_email/(?P<key>[-:\w]+)/$', VerifyEmailView.as_view(),

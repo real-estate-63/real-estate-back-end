@@ -29,6 +29,7 @@ class RegisterSerializer(serializers.Serializer):
     # Account
     username = serializers.CharField(required=True, max_length=254, write_only=True)
     email = serializers.EmailField(required=True, max_length=254)
+    user_type = serializers.CharField(required=True, max_length=10)
     # Profile
     first_name = serializers.CharField(required=True, max_length=30, write_only=True)
     middle_name = serializers.CharField(required=True, max_length=150, write_only=True)
@@ -40,13 +41,13 @@ class RegisterSerializer(serializers.Serializer):
     birth_date = serializers.DateField(required=True, write_only=True, format="%Y/%m/%d",
                                        input_formats=["%Y/%m/%d"])
     # Address
-    country_id = serializers.CharField(required=True, max_length=14, write_only=True)
-    province_city_id = serializers.CharField(required=True, max_length=14, write_only=True)
-    district_id = serializers.CharField(required=True, max_length=14, write_only=True)
-    ward_id = serializers.CharField(required=True, max_length=14, write_only=True)
+    country = serializers.CharField(required=True, max_length=14, write_only=True)
+    province_city = serializers.CharField(required=True, max_length=14, write_only=True)
+    district = serializers.CharField(required=True, max_length=14, write_only=True)
+    ward = serializers.CharField(required=True, max_length=14, write_only=True)
     name_street = serializers.CharField(required=True, max_length=254, write_only=True)
     number = serializers.CharField(required=True, max_length=14, write_only=True)
-    adress_id = serializers.IntegerField(read_only=True)
+    adress = serializers.IntegerField(read_only=True)
 
     def validate_email(self, email):
         email = get_adapter().clean_email(email)
@@ -71,26 +72,28 @@ class RegisterSerializer(serializers.Serializer):
                 self.validated_data.get('email', ''),
             'password1':
                 self.validated_data.get('password1', ''),
+            'user_type':
+                self.validated_data.get('user_type', ''),
             'first_name':
                 self.validated_data.get('first_name', ''),
             'middle_name':
                 self.validated_data.get('middle_name', ''),
             'last_name':
                 self.validated_data.get('last_name', ''),
-            'address_id':
-                self.validated_data.get('address_id', ''),
+            'address':
+                self.validated_data.get('address', ''),
             'phone_number':
                 self.validated_data.get('phone_number', ''),
             'birth_date':
                 self.validated_data.get('birth_date', ''),
-            'country_id':
-                self.validated_data.get('country_id', ''),
-            'province_city_id':
-                self.validated_data.get('province_city_id', ''),
-            'district_id':
-                self.validated_data.get('district_id', ''),
-            'ward_id':
-                self.validated_data.get('ward_id', ''),
+            'country':
+                self.validated_data.get('country', ''),
+            'province_city':
+                self.validated_data.get('province_city', ''),
+            'district':
+                self.validated_data.get('district', ''),
+            'ward':
+                self.validated_data.get('ward', ''),
             'name_street':
                 self.validated_data.get('name_street', ''),
             'number':

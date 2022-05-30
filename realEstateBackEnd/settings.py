@@ -168,7 +168,7 @@ SIMPLE_JWT = {
 
     'AUTH_HEADER_TYPES': ('Bearer',),
     'USER_ID_FIELD': 'id',
-    'USER_ID_CLAIM': 'user_id',
+    'USER_ID_CLAIM': 'user',
 
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'TOKEN_TYPE_CLAIM': 'token_type',
@@ -186,7 +186,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # Allauth
-SITE_ID = 4
+SITE_ID = 3
 REST_USE_JWT = True
 ACCOUNT_ADAPTER = 'users.adapter.CustomAccountAdapter'
 
