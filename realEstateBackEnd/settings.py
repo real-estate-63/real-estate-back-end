@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    # 'django_extensions',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
@@ -51,6 +50,8 @@ INSTALLED_APPS = [
     'django_filters',
     'systems',
     'users',
+    'sellers',
+    'buyers'
 
 ]
 
@@ -145,13 +146,9 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PARSER_CLASSES": ("rest_framework.parsers.JSONParser",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        # "rest_framework_simplejwt.authentication.JWTTokenUserAuthentication",
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-        # 'rest_framework.authentication.TokenAuthentication',
-        # 'rest_framework.authentication.BasicAuthentication',
     ),
-    # "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     # 'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
@@ -186,7 +183,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # Allauth
-SITE_ID = 3
+SITE_ID = 1
 REST_USE_JWT = True
 ACCOUNT_ADAPTER = 'users.adapter.CustomAccountAdapter'
 

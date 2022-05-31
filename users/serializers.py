@@ -1,33 +1,21 @@
-from abc import ABC
-
 from allauth.account.adapter import get_adapter
 from allauth.account.utils import setup_user_email
 from allauth.utils import email_address_exists
+from django.contrib.auth import get_user_model, authenticate
 from django.utils.translation import ugettext_lazy as _
-from rest_framework import serializers
+from rest_framework import serializers, exceptions
 from allauth.account import app_settings as allauth_settings
 
+from realEstateBackEnd.settings import INSTALLED_APPS, ACCOUNT_AUTHENTICATION_METHOD
 from systems.models import Country, ProvinceCity, District, Ward
-from users.models import User
+from users.models import UserProfile, Address
+
+UserModel = get_user_model()
 
 
-class UserSignUpSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('username', 'password')
-        extra_kwargs = {'password': {'write_only': True}}
-
-
-class UserSignInSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('comparative_name', 'password')
-        extra_kwargs = {"username": {"write_only": True}}
-
-
+# ################################################## ACCOUNT ##########################################################
 class RegisterSerializer(serializers.Serializer):
     # Account
-    username = serializers.CharField(required=True, max_length=254, write_only=True)
     email = serializers.EmailField(required=True, max_length=254)
     user_type = serializers.CharField(required=True, max_length=10)
     # Profile
@@ -47,7 +35,7 @@ class RegisterSerializer(serializers.Serializer):
     ward = serializers.CharField(required=True, max_length=14, write_only=True)
     name_street = serializers.CharField(required=True, max_length=254, write_only=True)
     number = serializers.CharField(required=True, max_length=14, write_only=True)
-    adress = serializers.IntegerField(read_only=True)
+    address = serializers.IntegerField(read_only=True)
 
     def validate_email(self, email):
         email = get_adapter().clean_email(email)
@@ -111,27 +99,155 @@ class RegisterSerializer(serializers.Serializer):
         return user
 
 
-# Address
+class UserLoginSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=False, allow_blank=True)
+    password = serializers.CharField(style={'input_type': 'password'})
+
+    def authenticate(self, **kwargs):
+        return authenticate(self.context['request'], **kwargs)
+
+    def _validate_email(self, email, password):
+        user = None
+
+        if email and password:
+            try:
+                user = self.authenticate(email=email, password=password)
+                print(user)
+            except Exception as e:
+                print(e)
+        else:
+            msg = _('Must include "email" and "password".')
+            raise exceptions.ValidationError(msg)
+
+        return user
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        password = attrs.get('password')
+        user = None
+
+        if 'allauth' in INSTALLED_APPS:
+            from allauth.account import app_settings
+            if ACCOUNT_AUTHENTICATION_METHOD == app_settings.AuthenticationMethod.USERNAME_EMAIL:
+                user = self._validate_email(email, password)
+
+        # Did we get back an active user?
+        if user:
+            if not user.is_active:
+                msg = _('User account is disabled.')
+                raise exceptions.ValidationError(msg)
+        else:
+            msg = _('Unable to log in with provided credentials.')
+            raise exceptions.ValidationError(msg)
+
+        attrs['user'] = user
+        return attrs
+
+
+class ResendAuthEmailSerializer(serializers.Serializer):
+    key = serializers.CharField()
+
+
+# ################################################## ACCOUNT ##########################################################
+
+# ################################################### USER ############################################################
+class UserManagementAddressSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False)
+
+    class Meta:
+        model = Address
+        fields = ('id',
+                  'country',
+                  'province_city',
+                  'district',
+                  'ward',
+                  'name_street',
+                  'number')
+        read_only_fields = ('id',)
+
+
+class UserManagementProfileSerializer(serializers.ModelSerializer):
+    address_profile = UserManagementAddressSerializer(many=True)
+
+    class Meta:
+        model = UserProfile
+        fields = ('first_name',
+                  'middle_name',
+                  'last_name',
+                  'phone_number',
+                  'birth_date',
+                  'address_profile')
+
+    def get_address(self, obj):
+        try:
+            if Address.objects.filter(id=obj.address.id).exists() is True:
+                get_address = Address.objects.get(id=obj.address.id)
+                data = UserManagementAddressSerializer(get_address).data
+                return data
+            else:
+                return {}
+        except AttributeError:
+            return {}
+
+    def update(self, instance, validated_data):
+        address_profile = validated_data.pop('address_profile')
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.middle_name = validated_data.get('middle_name', instance.middle_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.phone_number = validated_data.get('phone_number', instance.phone_number)
+        instance.birth_date = validated_data.get('birth_date', instance.birth_date)
+        instance.save()
+        for add in address_profile:
+            if 'id' in add.keys():
+                if Address.objects.filter(id=add['id']).exists():
+                    get_address = Address.objects.get(id=add['id'])
+                    get_address.country = add.get('country', get_address.country)
+                    get_address.province_city = add.get('province_city', get_address.province_city)
+                    get_address.district = add.get('district', get_address.district)
+                    get_address.ward = add.get('ward', get_address.ward)
+                    get_address.name_street = add.get('name_street', get_address.name_street)
+                    get_address.number = add.get('number', get_address.number)
+                    get_address.save()
+                else:
+                    continue
+            else:
+                continue
+        return instance
+
+
+# ################################################### USER ############################################################
+
+# ############################################## ADDRESS - APPENIX ####################################################
 
 class GetCountrySerializer(serializers.ModelSerializer):
     class Meta:
         model = Country
-        fields = ('id', 'name', 'code')
+        fields = ('id',
+                  'name',
+                  'code')
 
 
 class GetProvinceCitySerializer(serializers.ModelSerializer):
     class Meta:
         model = ProvinceCity
-        fields = ('id', 'name', 'code')
+        fields = ('id',
+                  'name',
+                  'code')
 
 
 class GetDistrictSerializer(serializers.ModelSerializer):
     class Meta:
         model = District
-        fields = ('id', 'name', 'code')
+        fields = ('id',
+                  'name',
+                  'code')
 
 
 class GetWardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ward
-        fields = ('id', 'name', 'code')
+        fields = ('id',
+                  'name',
+                  'code')
+
+# ############################################## ADDRESS - APPENIX ####################################################

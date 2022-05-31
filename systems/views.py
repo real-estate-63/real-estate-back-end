@@ -6,7 +6,7 @@ from systems.models import Country, ProvinceCity, District, Ward
 from systems.serializers import CountrySerializer, ProvinceSerializer, DistrictSerializer, WardSerializer
 
 
-class CountryManagement(viewsets.ModelViewSet):
+class CountryManagementViewSet(viewsets.ModelViewSet):
     serializer_class = CountrySerializer
     permission_classes = (IsAdminUser,)
     queryset = Country.objects.all()
@@ -25,7 +25,7 @@ class CountryManagement(viewsets.ModelViewSet):
             }, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ProvinceCityManagement(viewsets.ModelViewSet):
+class ProvinceCityManagementViewSet(viewsets.ModelViewSet):
     serializer_class = ProvinceSerializer
     permission_classes = (IsAdminUser,)
     queryset = ProvinceCity.objects.all()
@@ -44,7 +44,7 @@ class ProvinceCityManagement(viewsets.ModelViewSet):
             }, status=status.HTTP_400_BAD_REQUEST)
 
 
-class DistrictManagement(viewsets.ModelViewSet):
+class DistrictManagementViewSet(viewsets.ModelViewSet):
     serializer_class = DistrictSerializer
     permission_classes = (IsAdminUser,)
     queryset = District.objects.all()
@@ -63,7 +63,7 @@ class DistrictManagement(viewsets.ModelViewSet):
             }, status=status.HTTP_400_BAD_REQUEST)
 
 
-class WardManagement(viewsets.ModelViewSet):
+class WardManagementViewSet(viewsets.ModelViewSet):
     serializer_class = WardSerializer
     permission_classes = (IsAdminUser,)
     queryset = Ward.objects.all()

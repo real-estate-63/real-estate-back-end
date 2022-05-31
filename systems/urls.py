@@ -1,14 +1,14 @@
 from django.urls import path, include
 from rest_framework.routers import SimpleRouter
 
-from systems.views import CountryManagement, ProvinceCityManagement, DistrictManagement, \
-    WardManagement
+from systems.views import CountryManagementViewSet, ProvinceCityManagementViewSet, DistrictManagementViewSet, \
+    WardManagementViewSet
 
 router = SimpleRouter()
-router.register(r'^country_management', CountryManagement, basename="country_management")
-router.register(r'^province_city_management', ProvinceCityManagement, basename="province_city_management")
-router.register(r'^district_management', DistrictManagement, basename="district_management")
-router.register(r'^ward_management', WardManagement, basename="ward_management")
+router.register(r'country_management', CountryManagementViewSet, basename="country_management")
+router.register(r'province_city_management', ProvinceCityManagementViewSet, basename="province_city_management")
+router.register(r'district_management', DistrictManagementViewSet, basename="district_management")
+router.register(r'ward_management', WardManagementViewSet, basename="ward_management")
 
 
 urlpatterns = [
