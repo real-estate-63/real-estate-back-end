@@ -78,9 +78,29 @@ class UserProfile(models.Model):
         super(UserProfile, self).save(*args, **kwargs)
 
 
+class RealEstate(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    name = models.CharField(max_length=256)
+    type = models.CharField(max_length=64)
+    description = models.TextField()
+    create_at = models.DateTimeField(auto_now=True)
+    update_at = models.DateTimeField(auto_now=True)
+    image = models.ImageField(upload_to='images', blank=True)
+    REALESTATE_TYPE_CHOICES = ((1, 'New'), (2, 'Sold'))
+    status = models.IntegerField(choices=REALESTATE_TYPE_CHOICES, default=1)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'real_estate'
+
+
 class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='address_profile')
+    real_estate = models.OneToOneField(RealEstate, on_delete=models.CASCADE, null=True, blank=True, related_name='address_real_estate')
     country = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True)
     province_city = models.ForeignKey(ProvinceCity, on_delete=models.SET_NULL, null=True)
     district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True)
@@ -98,22 +118,3 @@ class Address(models.Model):
 
     class Meta:
         db_table = 'address'
-
-
-class RealEstate(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=256)
-    type = models.CharField(max_length=64)
-    address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True)
-    description = models.TextField()
-    create_at = models.DateTimeField(auto_now=True)
-    update_at = models.DateTimeField(auto_now=True)
-    image = models.ImageField(upload_to='images', blank=True)
-    REALESTATE_TYPE_CHOICES = ((1, 'New'), (2, 'Sold'))
-    status = models.IntegerField(choices=REALESTATE_TYPE_CHOICES, default=1)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        db_table = 'real_estate'
