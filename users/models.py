@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 # Create your models here.
-from systems.models import District, Ward, Country, ProvinceCity
+from systems.models import District, Ward, Country, ProvinceCity, TypeSell, TypeLease
 
 
 class UserManager(BaseUserManager):
@@ -82,13 +82,18 @@ class RealEstate(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     name = models.CharField(max_length=256)
-    type = models.CharField(max_length=64)
+    REALESTATE_TYPE_CHOICES = ((1, 'Sell'), (2, 'Lease'))
+    type = models.IntegerField(choices=REALESTATE_TYPE_CHOICES, default=1)
+    type_sell = models.ForeignKey(TypeSell, on_delete=models.SET_NULL, null=True)
+    type_lease = models.ForeignKey(TypeLease, on_delete=models.SET_NULL, null=True)
+    price = models.FloatField()
+    area = models.FloatField()
     description = models.TextField()
     create_at = models.DateTimeField(auto_now=True)
     update_at = models.DateTimeField(auto_now=True)
     image = models.ImageField(upload_to='images', blank=True)
-    REALESTATE_TYPE_CHOICES = ((1, 'New'), (2, 'Sold'))
-    status = models.IntegerField(choices=REALESTATE_TYPE_CHOICES, default=1)
+    REALESTATE_STATUS_CHOICES = ((1, 'New'), (2, 'Sold'))
+    status = models.IntegerField(choices=REALESTATE_STATUS_CHOICES, default=1)
 
     def __str__(self):
         return self.name

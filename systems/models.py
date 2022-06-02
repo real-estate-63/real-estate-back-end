@@ -58,3 +58,23 @@ class Ward(models.Model):
 
     class Meta:
         db_table = 'ward'
+
+
+class TypeSell(models.Model):
+    name = models.CharField(max_length=128)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'type_sell'
+
+
+class TypeLease(models.Model):
+    name = models.CharField(max_length=128)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'type_lease'
