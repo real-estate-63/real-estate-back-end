@@ -3,8 +3,10 @@ from django.contrib.auth.models import AbstractUser
 
 from django.db import models
 
+from enum import Enum
+
 # Create your models here.
-from systems.models import District, Ward, Country, ProvinceCity, TypeSell, TypeLease
+from systems.models import District, Ward, Country, ProvinceCity
 
 
 class UserManager(BaseUserManager):
@@ -77,6 +79,96 @@ class UserProfile(models.Model):
         self.full_name = '%s %s %s' % (self.first_name, self.middle_name, self.last_name)
         super(UserProfile, self).save(*args, **kwargs)
 
+class SetTypeSell(Enum):
+    PRIVATE_HOUSE = 1
+    APARTMENT = 2
+    VILLA_TOWNHOUSE = 3
+    HOUSE_STREET = 4
+    SHOPHOUSE_COMMERCIAL = 5
+    PROJECT_LAND = 6
+    SOIL = 7
+    FARM_RESORT = 8
+    WAREHOUSE_FACTORY = 9
+    DIFFERENT = 10
+
+    def __str__(self):
+        if self is self.PRIVATE_HOUSE:
+            return "Bán nhà riêng"
+        elif self is self.APARTMENT:
+            return "Bán căn hộ chung cư"
+        elif self is self.VILLA_TOWNHOUSE:
+            return "Bán biệt thự, nhà liền kề"
+        elif self is self.HOUSE_STREET:
+            return "Bán nhà mặt phố"
+        elif self is self.SHOPHOUSE_COMMERCIAL:
+            return "Bán shophouse, nhà phố thương mại"
+        elif self is self.PROJECT_LAND:
+            return "Bán đất nền dự án"
+        elif self is self.SOIL:
+            return "Bán đất"
+        elif self is self.FARM_RESORT:
+            return "Bán trang trại, khu nghỉ dưỡng"
+        elif self is self.WAREHOUSE_FACTORY:
+            return "Bán kho, nhà xưởng"
+        elif self is self.DIFFERENT:
+            return "Bán loại bất động sản khác"
+        else:
+            raise RuntimeError("unexpected value %d" % self.value)
+
+    def __repr__(self):
+        return self.__str__()
+
+    @staticmethod
+    def choices():
+        return [(s_type.value, str(s_type)) for s_type in SetTypeLease]
+
+
+class SetTypeLease(Enum):
+    PRIVATE_HOUSE = 1
+    APARTMENT = 2
+    VILLA_TOWNHOUSE = 3
+    HOUSE_STREET = 4
+    SHOPHOUSE_COMMERCIAL = 5
+    INN_ROOM = 6
+    OFFICE = 7
+    SHOP_KIOSK = 8
+    WAREHOUSE_FACTORY = 9
+    SOIL = 10
+    DIFFERENT = 11
+
+    def __str__(self):
+        if self is self.PRIVATE_HOUSE:
+            return "Cho thuê nhà riêng"
+        elif self is self.APARTMENT:
+            return "Cho thuê căn hộ chung cư"
+        elif self is self.VILLA_TOWNHOUSE:
+            return "Cho thuê biệt thự, nhà liền kề"
+        elif self is self.HOUSE_STREET:
+            return "Cho thuê nhà mặt phố"
+        elif self is self.SHOPHOUSE_COMMERCIAL:
+            return "Cho thuê shophouse, nhà phố thương mại"
+        elif self is self.INN_ROOM:
+            return "Cho thuê nhà trọ, phòng trọ"
+        elif self is self.OFFICE:
+            return "Cho thuê văn phòng"
+        elif self is self.SHOP_KIOSK:
+            return "Cho thuê cửa hàng, ki ốt"
+        elif self is self.WAREHOUSE_FACTORY:
+            return "Cho thuê kho, nhà xưởng, đất"
+        elif self is self.SOIL:
+            return "Cho thuê đất"
+        elif self is self.DIFFERENT:
+            return "Cho thuê loại bất động sản khác"
+        else:
+            raise RuntimeError("unexpected value %d" % self.value)
+
+    def __repr__(self):
+        return self.__str__()
+
+    @staticmethod
+    def choices():
+        return [(s_type.value, str(s_type)) for s_type in SetTypeLease]
+
 
 class RealEstate(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -84,8 +176,8 @@ class RealEstate(models.Model):
     name = models.CharField(max_length=256)
     REALESTATE_TYPE_CHOICES = ((1, 'Sell'), (2, 'Lease'))
     type = models.IntegerField(choices=REALESTATE_TYPE_CHOICES, default=1)
-    type_sell = models.ForeignKey(TypeSell, on_delete=models.SET_NULL, null=True)
-    type_lease = models.ForeignKey(TypeLease, on_delete=models.SET_NULL, null=True)
+    type_sell = models.IntegerField(choices=SetTypeSell.choices())
+    type_lease = models.IntegerField(choices=SetTypeLease.choices())
     price = models.FloatField()
     area = models.FloatField()
     description = models.TextField()
@@ -105,7 +197,8 @@ class RealEstate(models.Model):
 class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='address_profile')
-    real_estate = models.OneToOneField(RealEstate, on_delete=models.CASCADE, null=True, blank=True, related_name='address_real_estate')
+    real_estate = models.OneToOneField(RealEstate, on_delete=models.CASCADE, null=True, blank=True,
+                                       related_name='address_real_estate')
     country = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True)
     province_city = models.ForeignKey(ProvinceCity, on_delete=models.SET_NULL, null=True)
     district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True)
