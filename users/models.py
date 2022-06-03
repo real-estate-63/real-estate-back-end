@@ -79,6 +79,7 @@ class UserProfile(models.Model):
         self.full_name = '%s %s %s' % (self.first_name, self.middle_name, self.last_name)
         super(UserProfile, self).save(*args, **kwargs)
 
+
 class SetTypeSell(Enum):
     PRIVATE_HOUSE = 1
     APARTMENT = 2
@@ -120,7 +121,7 @@ class SetTypeSell(Enum):
 
     @staticmethod
     def choices():
-        return [(s_type.value, str(s_type)) for s_type in SetTypeLease]
+        return [(s_type.value, str(s_type)) for s_type in SetTypeSell]
 
 
 class SetTypeLease(Enum):
@@ -176,16 +177,16 @@ class RealEstate(models.Model):
     name = models.CharField(max_length=256)
     REALESTATE_TYPE_CHOICES = ((1, 'Sell'), (2, 'Lease'))
     type = models.IntegerField(choices=REALESTATE_TYPE_CHOICES, default=1)
-    type_sell = models.IntegerField(choices=SetTypeSell.choices())
-    type_lease = models.IntegerField(choices=SetTypeLease.choices())
+    type_sell = models.IntegerField(choices=SetTypeSell.choices(), blank=True, null=True)
+    type_lease = models.IntegerField(choices=SetTypeLease.choices(), blank=True, null=True)
     price = models.FloatField()
     area = models.FloatField()
     description = models.TextField()
-    create_at = models.DateTimeField(auto_now=True)
-    update_at = models.DateTimeField(auto_now=True)
     image = models.ImageField(upload_to='images', blank=True)
     REALESTATE_STATUS_CHOICES = ((1, 'New'), (2, 'Sold'))
     status = models.IntegerField(choices=REALESTATE_STATUS_CHOICES, default=1)
+    create_at = models.DateTimeField(auto_now=True)
+    update_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name

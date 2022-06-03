@@ -27,6 +27,10 @@ class BuyerDetailRealEstateSerializer(serializers.ModelSerializer):
         model = RealEstate
         fields = ('name',
                   'type',
+                  'type_sell',
+                  'type_lease',
+                  'price',
+                  'area',
                   'description',
                   'image',
                   'status',
@@ -34,6 +38,10 @@ class BuyerDetailRealEstateSerializer(serializers.ModelSerializer):
                   )
         read_only_fields = ('name',
                             'type',
+                            'type_sell',
+                            'type_lease',
+                            'price',
+                            'area',
                             'description',
                             'image',
                             'status',
@@ -41,16 +49,17 @@ class BuyerDetailRealEstateSerializer(serializers.ModelSerializer):
 
 
 class BuyerListRealEstateSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = RealEstate
-        fields = ('name',
+        fields = ('id',
+                  'name',
                   'type',
                   'description',
                   'image',
                   'status',
                   )
-        read_only_fields = ('name',
+        read_only_fields = ('id',
+                            'name',
                             'type',
                             'description',
                             'image',

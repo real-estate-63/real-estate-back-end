@@ -30,6 +30,10 @@ class SellerManagementRealEstateSerializer(serializers.ModelSerializer):
         fields = ('id',
                   'name',
                   'type',
+                  'type_sell',
+                  'type_lease',
+                  'price',
+                  'area',
                   'description',
                   'image',
                   'status',
@@ -50,6 +54,10 @@ class SellerManagementRealEstateSerializer(serializers.ModelSerializer):
         # update real estate
         instance.name = validated_data.get('name', instance.name)
         instance.type = validated_data.get('type', instance.type)
+        instance.type_sell = validated_data.get('type_sell', instance.type_sell)
+        instance.type_lease = validated_data.get('type_lease', instance.type_lease)
+        instance.price = validated_data.get('price', instance.price)
+        instance.area = validated_data.get('area', instance.area)
         instance.description = validated_data.get('description', instance.description)
         instance.image = validated_data.get('image', instance.image)
         instance.status = validated_data.get('status', instance.status)
